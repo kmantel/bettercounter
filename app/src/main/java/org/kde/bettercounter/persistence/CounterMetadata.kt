@@ -4,6 +4,7 @@ data class CounterMetadata(
     var name: String,
     var interval: Interval,
     var goal: Int,
+    var count: Int,
     var color: CounterColor,
 )
 

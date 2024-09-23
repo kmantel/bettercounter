@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kde.bettercounter.boilerplate.AppDatabase
@@ -107,6 +108,13 @@ class ViewModel(application: Application) {
         }
     }
 
+    fun incrementCounterMultiple(name: String, count: Int) {
+        var baseTime = Calendar.getInstance().time.getTime();
+        for (i in 0 until count) {
+            incrementCounter(name, Date(baseTime + i))
+        }
+    }
+
     fun incrementCounterWithCallback(name: String, date: Date = Calendar.getInstance().time, callback: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             repo.addEntry(name, date)
@@ -117,14 +125,23 @@ class ViewModel(application: Application) {
         }
     }
 
-    fun decrementCounter(name: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+    fun decrementCounter(name: String): Job {
+        return CoroutineScope(Dispatchers.IO).launch {
             val oldEntryDate = repo.removeEntry(name)
             summaryMap[name]?.postValue(repo.getCounterSummary(name))
             if (oldEntryDate != null) {
                 for (observer in counterObservers) {
                     observer.onCounterDecremented(name, oldEntryDate)
                 }
+            }
+        }
+    }
+
+    fun decrementCounterMultiple(name: String, count: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (i in 0 until count) {
+                val job = decrementCounter(name)
+                job.join()
             }
         }
     }
@@ -253,7 +270,7 @@ class ViewModel(application: Application) {
                             sendProgress(namesToImport.size, 0)
                         }
                     }
-                    val reusedCounterMetadata = CounterMetadata("", Interval.DEFAULT, 0, CounterColor.getDefault(context))
+                    val reusedCounterMetadata = CounterMetadata("", Interval.DEFAULT, 0, 0, CounterColor.getDefault(context))
                     namesToImport.forEach { name ->
                         if (!counterExists(name)) {
                             reusedCounterMetadata.name = name

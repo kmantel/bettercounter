@@ -31,6 +31,7 @@ class CounterSettingsDialogBuilder(private val context: Context, private val vie
     private var onSaveListener: (counterMetadata: CounterMetadata) -> Unit = { _ -> }
     private var previousName: String? = null
     private var goal = 0
+    private var totalCount = 0
 
     init {
         builder.setView(binding.root)
@@ -89,8 +90,35 @@ class CounterSettingsDialogBuilder(private val context: Context, private val vie
             binding.goalInput.isCursorVisible = hasFocus && (goal != 0)
         }
 
+        binding.countInputBox.setStartIconOnClickListener {
+            if (totalCount > 0) {
+                totalCount -= 1
+            }
+            updateCountText()
+        }
+        binding.countInputBox.setEndIconOnClickListener {
+            totalCount += 1
+            updateCountText()
+        }
+
+        binding.countInput.addTextChangedListener {
+            totalCount = it.toString().toIntOrNull() ?: 0
+            if (totalCount == 0) {
+                it?.clear()
+            }
+            binding.countInput.isCursorVisible = binding.countInput.hasFocus() && (totalCount != 0)
+        }
+
+        binding.countInput.setOnFocusChangeListener { _, hasFocus ->
+            binding.countInput.isCursorVisible = hasFocus && (totalCount != 0)
+        }
+
         builder.setPositiveButton(R.string.save, null)
         builder.setNegativeButton(R.string.cancel, null)
+    }
+
+    private fun updateCountText() {
+        binding.countInput.setText(totalCount.toString())
     }
 
     private fun updateGoalText() {
@@ -106,6 +134,7 @@ class CounterSettingsDialogBuilder(private val context: Context, private val vie
         binding.fakeSpinnerInterval.setText(Interval.DEFAULT.toHumanReadableResourceId())
         binding.spinnerInterval.setSelection(intervalAdapter.positionOf(Interval.DEFAULT))
         updateGoalText()
+        updateCountText()
         return this
     }
 
@@ -119,7 +148,9 @@ class CounterSettingsDialogBuilder(private val context: Context, private val vie
         binding.spinnerInterval.setSelection(intervalAdapter.positionOf(counter.interval))
         colorAdapter.selectedColor = counter.color.colorInt
         goal = counter.goal
+        totalCount = counter.totalCount
         updateGoalText()
+        updateCountText()
         return this
     }
 
@@ -156,6 +187,7 @@ class CounterSettingsDialogBuilder(private val context: Context, private val vie
                             name,
                             intervalAdapter.itemAt(binding.spinnerInterval.selectedItemPosition),
                             goal,
+                            totalCount,
                             CounterColor(colorAdapter.selectedColor),
                         )
                     )

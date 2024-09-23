@@ -8,29 +8,79 @@
     android:paddingRight="16dp"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nameEditBox"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:hint="@string/counter_name"
-        android:labelFor="@id/nameEdit"
-        app:boxStrokeWidthFocused="1dp"
-        app:boxStrokeWidth="1dp"
-        app:boxStrokeColor="@color/outlinebox"
-        app:hintTextColor="@color/outlinebox"
-        android:textColorHint="@color/outlinebox"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox" >
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:baselineAligned="false">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nameEdit"
-            android:inputType="text|textCapSentences"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="My Counter"
-            android:importantForAutofill="no" />
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameEditBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:hint="@string/counter_name"
+                android:labelFor="@id/nameEdit"
+                app:boxStrokeWidthFocused="1dp"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeColor="@color/outlinebox"
+                app:hintTextColor="@color/outlinebox"
+                android:textColorHint="@color/outlinebox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox" >
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAutofill="no"
+                    android:inputType="text|textCapSentences"
+                    tools:text="My Counter" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/countInputBox"
+                android:layout_weight="1.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintAnimationEnabled="false"
+                app:expandedHintEnabled="false"
+                android:hint="@string/count"
+                android:layout_marginStart="6dp"
+                android:labelFor="@id/countInput"
+                app:startIconDrawable="@drawable/ic_minusone"
+                app:endIconDrawable="@drawable/ic_plusone"
+                app:endIconMode="custom"
+                app:boxStrokeWidthFocused="1dp"
+                app:boxStrokeWidth="1dp"
+                app:boxStrokeColor="@color/outlinebox"
+                app:hintTextColor="@color/outlinebox"
+                android:textColorHint="@color/outlinebox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox" >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/countInput"
+                    android:textAlignment="center"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="No"
+                    android:text=""
+                    android:hint="Ø"
+                    android:importantForAutofill="no"
+                    tools:ignore="HardcodedText" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
