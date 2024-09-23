@@ -109,9 +109,13 @@ class ViewModel(application: Application) {
     }
 
     fun incrementCounterMultiple(name: String, count: Int) {
-        var baseTime = Calendar.getInstance().time.getTime();
-        for (i in 0 until count) {
-            incrementCounter(name, Date(baseTime + i))
+        CoroutineScope(Dispatchers.IO).launch {
+            var baseTime = Calendar.getInstance().time.getTime()
+            var entries = mutableListOf<Entry>()
+            for (i in 0 until count)
+                entries.add(Entry(name = name, date = Date(baseTime + i)))
+            repo.bulkAddEntries(entries)
+            summaryMap[name]?.postValue(repo.getCounterSummary(name))
         }
     }
 
